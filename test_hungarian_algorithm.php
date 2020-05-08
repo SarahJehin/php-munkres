@@ -57,27 +57,27 @@ foreach ($students as $key =>$student) {
 }
 
 // TEST COMBINATIONAL
-//$start = microtime(true);
-//$combinations = combinations($studentPreferences);
-//foreach ($combinations as $combi) {
-//    // Check if available
-//    $combinationOk = true;
-//    foreach ($slotsAvailability as $slot => $amount) {
-//        $arrCountVal = array_count_values($combi);
-//        if(isset($arrCountVal[$slot]) && $arrCountVal[$slot] > $amount) {
-//            $combinationOk = false;
-//            break;
-//        }
-//    }
-//    if($combinationOk) {
-//        $finalCombi = $combi;
-//        break;
-//    }
-//}
-//
-//$end = microtime(true);
-//echo($end-$start);
-//echo '<pre>' . var_export($finalCombi, true) . '</pre>';
+$start = microtime(true);
+$combinations = combinations($studentPreferences);
+foreach ($combinations as $combi) {
+    // Check if available
+    $combinationOk = true;
+    foreach ($slotsAvailability as $slot => $amount) {
+        $arrCountVal = array_count_values($combi);
+        if(isset($arrCountVal[$slot]) && $arrCountVal[$slot] > $amount) {
+            $combinationOk = false;
+            break;
+        }
+    }
+    if($combinationOk) {
+        $finalCombi = $combi;
+        break;
+    }
+}
+
+$end = microtime(true);
+echo($end-$start);
+echo '<pre>' . var_export($finalCombi, true) . '</pre>';
 
 
 
@@ -87,7 +87,7 @@ $ha = new HungarianAlgorithm();
 $ha->initData($matrix);
 $result = $ha->runAlgorithm();
 
-// Do the translation
+// Do the mapping
 $finalResult = [];
 foreach ($result as $student => $assignmentArray) {
     $assignedId = array_search(1, $assignmentArray);
@@ -102,7 +102,7 @@ echo '<pre>' . var_export($finalResult, true) . '</pre>';
 // https://stackoverflow.com/questions/8567082/how-to-generate-in-php-all-combinations-of-items-in-multiple-arrays
 function combinations($arrays, $i = 0) {
     if (!isset($arrays[$i])) {
-        return array();
+        return [];
     }
     if ($i == count($arrays) - 1) {
         return $arrays[$i];
@@ -111,14 +111,14 @@ function combinations($arrays, $i = 0) {
     // get combinations from subsequent arrays
     $tmp = combinations($arrays, $i + 1);
 
-    $result = array();
+    $result = [];
 
     // concat each array from tmp with each element from $arrays[$i]
     foreach ($arrays[$i] as $k => $v) {
         foreach ($tmp as $x => $t) {
             $result[] = is_array($t) ?
-                array_merge(array($v), $t) :
-                array($v, $t);
+                array_merge([$v], $t) :
+                [$v, $t];
         }
     }
 
